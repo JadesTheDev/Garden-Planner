@@ -1,0 +1,161 @@
+const KEY='mochaai-garden-planner';
+
+// Built-in crop library. Varieties are examples only and can be edited per square.
+const plantRows=[
+  // Alliums
+  ['🧅','Onion','Yellow Sweet Spanish','Allium cepa',9,'Alliums'],
+  ['🧅','Red Onion','Red Burgundy','Allium cepa',9,'Alliums'],
+  ['🧅','Shallot','French Red','Allium cepa var. aggregatum',9,'Alliums'],
+  ['🧄','Garlic','Music','Allium sativum',9,'Alliums'],
+  ['🧅','Leek','King Richard','Allium ampeloprasum',9,'Alliums'],
+  ['🌱','Scallion','Evergreen Hardy White','Allium fistulosum',16,'Alliums'],
+  ['🌿','Chives','Common','Allium schoenoprasum',16,'Alliums'],
+
+  // Brassicas
+  ['🥬','Cabbage','Brunswick','Brassica oleracea var. capitata',1,'Brassicas'],
+  ['🥦','Broccoli','Calabrese','Brassica oleracea var. italica',1,'Brassicas'],
+  ['🥦','Cauliflower','Snowball','Brassica oleracea var. botrytis',1,'Brassicas'],
+  ['🥬','Kale','Lacinato','Brassica oleracea var. sabellica',1,'Brassicas'],
+  ['🥬','Collards','Georgia Southern','Brassica oleracea var. viridis',1,'Brassicas'],
+  ['🥬','Brussels Sprouts','Long Island Improved','Brassica oleracea var. gemmifera',1,'Brassicas'],
+  ['🟢','Kohlrabi','Early White Vienna','Brassica oleracea var. gongylodes',4,'Brassicas'],
+  ['🟣','Turnip','Purple Top White Globe','Brassica rapa subsp. rapa',9,'Brassicas'],
+  ['🟣','Rutabaga','American Purple Top','Brassica napus var. napobrassica',4,'Brassicas'],
+  ['🔴','Radish','Cherry Belle','Raphanus sativus',16,'Brassicas'],
+
+  // Nightshades
+  ['🍅','Tomato','Cherokee Purple','Solanum lycopersicum',1,'Nightshades'],
+  ['🫑','Sweet Pepper','California Wonder','Capsicum annuum',1,'Nightshades'],
+  ['🌶️','Hot Pepper','Jalapeño','Capsicum annuum',1,'Nightshades'],
+  ['🍆','Eggplant','Black Beauty','Solanum melongena',1,'Nightshades'],
+  ['🥔','Potato','Yukon Gold','Solanum tuberosum',4,'Nightshades'],
+  ['🟢','Tomatillo','Toma Verde','Physalis philadelphica',1,'Nightshades'],
+
+  // Cucurbits
+  ['🥒','Cucumber','Marketmore','Cucumis sativus',2,'Cucurbits'],
+  ['🥒','Zucchini','Black Beauty','Cucurbita pepo',1,'Cucurbits'],
+  ['🟡','Summer Squash','Early Prolific Straightneck','Cucurbita pepo',1,'Cucurbits'],
+  ['🎃','Winter Squash','Butternut','Cucurbita moschata',1,'Cucurbits'],
+  ['🎃','Pumpkin','Connecticut Field','Cucurbita pepo',1,'Cucurbits'],
+  ['🍉','Watermelon','Sugar Baby','Citrullus lanatus',1,'Cucurbits'],
+  ['🍈','Muskmelon','Hale’s Best','Cucumis melo',1,'Cucurbits'],
+  ['🎃','Gourd','Birdhouse','Lagenaria siceraria',1,'Cucurbits'],
+
+  // Legumes
+  ['🫘','Green Bean','Blue Lake','Phaseolus vulgaris',4,'Legumes'],
+  ['🫘','Dry Bean','Jacob’s Cattle','Phaseolus vulgaris',4,'Legumes'],
+  ['🫘','Lima Bean','Henderson Bush','Phaseolus lunatus',4,'Legumes'],
+  ['🫘','Cowpea','Black-eyed Pea','Vigna unguiculata',4,'Legumes'],
+  ['🫛','Garden Pea','Green Arrow','Pisum sativum',8,'Legumes'],
+  ['🫛','Snow Pea','Oregon Sugar Pod II','Pisum sativum',8,'Legumes'],
+  ['🫛','Snap Pea','Sugar Ann','Pisum sativum',8,'Legumes'],
+  ['🫛','Edamame','Midori Giant','Glycine max',4,'Legumes'],
+  ['🫘','Chickpea','Kabuli','Cicer arietinum',4,'Legumes'],
+  ['🫘','Lentil','French Green','Lens culinaris',16,'Legumes'],
+  ['🥜','Peanut','Virginia','Arachis hypogaea',4,'Legumes'],
+
+  // Roots & tubers
+  ['🥕','Carrot','Danvers 126','Daucus carota subsp. sativus',16,'Roots'],
+  ['🟣','Beet','Detroit Dark Red','Beta vulgaris',9,'Roots'],
+  ['🥕','Parsnip','Hollow Crown','Pastinaca sativa',9,'Roots'],
+  ['🍠','Sweet Potato','Beauregard','Ipomoea batatas',4,'Roots'],
+  ['🌿','Cassava','Sweet Cassava','Manihot esculenta',1,'Roots'],
+  ['🥕','Salsify','Mammoth Sandwich Island','Tragopogon porrifolius',9,'Roots'],
+
+  // Leafy greens
+  ['🥬','Lettuce','Buttercrunch','Lactuca sativa',4,'Greens'],
+  ['🍃','Spinach','Bloomsdale','Spinacia oleracea',9,'Greens'],
+  ['🥬','Swiss Chard','Bright Lights','Beta vulgaris subsp. vulgaris',4,'Greens'],
+  ['🌿','Arugula','Astro','Eruca vesicaria',9,'Greens'],
+  ['🥬','Mustard Greens','Southern Giant Curled','Brassica juncea',4,'Greens'],
+  ['🥬','Endive','Green Curled Ruffec','Cichorium endivia',4,'Greens'],
+  ['🥬','Bok Choy','Joi Choi','Brassica rapa subsp. chinensis',4,'Greens'],
+
+  // Other annual vegetables & grains
+  ['🌱','Okra','Clemson Spineless','Abelmoschus esculentus',1,'Other'],
+  ['🌽','Sweet Corn','Golden Bantam','Zea mays',4,'Other'],
+  ['🌾','Popcorn','Strawberry Popcorn','Zea mays var. everta',4,'Other'],
+  ['🌾','Sorghum','Mennonite','Sorghum bicolor',4,'Other'],
+  ['🌾','Millet','Proso Millet','Panicum miliaceum',9,'Other'],
+  ['🌾','Quinoa','Brightest Brilliant Rainbow','Chenopodium quinoa',4,'Other'],
+  ['🌺','Amaranth','Hopi Red Dye','Amaranthus cruentus',4,'Other'],
+  ['🌿','Celery','Tall Utah','Apium graveolens',4,'Other'],
+  ['🌿','Celeriac','Brilliant','Apium graveolens var. rapaceum',4,'Other'],
+  ['🌿','Bulb Fennel','Florence','Foeniculum vulgare var. azoricum',4,'Other'],
+
+  // Perennial vegetables
+  ['🌱','Asparagus','Mary Washington','Asparagus officinalis',1,'Perennials'],
+  ['🌿','Artichoke','Green Globe','Cynara cardunculus var. scolymus',1,'Perennials'],
+  ['🌿','Rhubarb','Victoria','Rheum × hybridum',1,'Perennials'],
+  ['🌿','Horseradish','Common','Armoracia rusticana',1,'Perennials'],
+
+  // Small fruits & vines
+  ['🍓','Strawberry','Earliglow','Fragaria × ananassa',4,'Fruit'],
+  ['🫐','Blueberry','Bluecrop','Vaccinium corymbosum',1,'Fruit'],
+  ['🫐','Blackberry','Prime-Ark Freedom','Rubus',1,'Fruit'],
+  ['🫐','Raspberry','Heritage','Rubus idaeus',1,'Fruit'],
+  ['🍇','Grape','Concord','Vitis labrusca',1,'Fruit'],
+  ['🟠','Ground Cherry','Aunt Molly’s','Physalis pruinosa',1,'Fruit'],
+
+  // Culinary herbs
+  ['🌿','Basil','Genovese','Ocimum basilicum',4,'Herbs'],
+  ['🌿','Dill','Bouquet','Anethum graveolens',4,'Herbs'],
+  ['🌿','Cilantro','Slow Bolt','Coriandrum sativum',9,'Herbs'],
+  ['🌿','Parsley','Giant of Italy','Petroselinum crispum',4,'Herbs'],
+  ['🌿','Sage','Common','Salvia officinalis',1,'Herbs'],
+  ['🌿','Thyme','English','Thymus vulgaris',4,'Herbs'],
+  ['🌿','Oregano','Greek','Origanum vulgare subsp. hirtum',1,'Herbs'],
+  ['🌿','Rosemary','Tuscan Blue','Salvia rosmarinus',1,'Herbs'],
+  ['🌿','Mint','Spearmint','Mentha spicata',1,'Herbs'],
+  ['🌼','Chamomile','German','Matricaria chamomilla',9,'Herbs'],
+  ['🫚','Ginger','Common','Zingiber officinale',4,'Herbs'],
+  ['🫚','Turmeric','Common','Curcuma longa',4,'Herbs']
+];
+const plants=plantRows.map(([icon,name,variety,species,density,category])=>({icon,name,variety,species,density,category}));
+const categories=['All','Alliums','Brassicas','Nightshades','Cucurbits','Legumes','Roots','Greens','Other','Perennials','Fruit','Herbs'];
+
+const demo={year:2026,years:[2026],beds:[{id:'kitchen',year:2026,name:'Kitchen Garden',shape:'rectangle',length:8,width:4,plants:{0:plants.find(p=>p.name==='Tomato'),1:plants.find(p=>p.name==='Basil'),2:plants.find(p=>p.name==='Cabbage'),4:plants.find(p=>p.name==='Green Bean'),5:plants.find(p=>p.name==='Spinach'),6:plants.find(p=>p.name==='Carrot')}}],ideas:['Three Sisters Bed','Tea & Medicinal Herbs','Moon Garden']};
+let state=load(),active=null,selected=plants.find(p=>p.name==='Tomato'),cellIndex=null,shape='rectangle',plantCategory='All',plantSearch='';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||clone(demo)}catch{return clone(demo)}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
+function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function cap(s){return s[0].toUpperCase()+s.slice(1)}
+function toast(s){$('#toast').textContent=s;$('#toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').classList.remove('show'),1600)}
+function years(){$('#year').innerHTML=state.years.sort().map(y=>`<option ${y===state.year?'selected':''}>${y}</option>`).join('')}
+function beds(){const list=state.beds.filter(b=>b.year===state.year);$('#bedList').innerHTML=list.length?list.map(b=>`<button class="bed-card" data-id="${b.id}"><span class="thumb ${b.shape}"></span><span><h3>${esc(b.name)}</h3><p>${cap(b.shape)} · ${b.length} × ${b.width}</p><small>${Object.keys(b.plants||{}).length} planted squares</small><em>Open visual planner →</em></span><span class="delete" data-delete="${b.id}">×</span></button>`).join(''):`<div class="empty-card"><b>No beds committed for ${state.year}</b><br>Create one—or enjoy having promised yourself nothing.</div>`}
+function ideas(){$('#ideaList').innerHTML=state.ideas.length?state.ideas.map((n,i)=>`<article class="idea"><span>🌱</span><div><h3>${esc(n)}</h3><p>Loose concept · not committed</p></div><button data-commit="${i}">Add to ${state.year} Plan</button></article>`).join(''):'<div class="empty-card">No idea beds yet.</div>'}
+function palette(){
+  const q=plantSearch.trim().toLowerCase();
+  const visible=plants.filter(p=>(plantCategory==='All'||p.category===plantCategory)&&(!q||[p.name,p.variety,p.species,p.category].some(v=>String(v).toLowerCase().includes(q))));
+  $('#plantFilters').innerHTML=categories.map(c=>`<button type="button" class="filter-chip ${c===plantCategory?'active':''}" data-category="${c}">${c}</button>`).join('');
+  $('#palette').innerHTML=visible.length?visible.map(p=>{const i=plants.indexOf(p);return `<button class="palette ${p===selected?'selected':''}" data-plant="${i}" title="${esc(p.variety)}"><span>${p.icon}</span><small>${esc(p.name)}</small></button>`}).join(''):'<p class="no-plants">No crops match that filter.</p>';
+  $('#paletteCount').textContent=`${visible.length} of ${plants.length} crops`;
+}
+function show(name){$$('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===name));$$('.view').forEach(v=>v.classList.remove('active'));$('#'+name).classList.add('active')}
+function openBed(id){active=state.beds.find(b=>b.id===id);show('planner');planner()}
+function planner(){const canvas=$('#canvas'),grid=$('#grid');if(!active){canvas.style.display='none';$('#empty').style.display='block';palette();return}$('#empty').style.display='none';canvas.style.display='block';canvas.className='canvas '+active.shape;$('#plannerTitle').textContent=active.name;$('#plannerMeta').textContent=`${active.year} · ${cap(active.shape)} · ${active.length} × ${active.width} squares`;const cols=Math.max(2,Math.min(12,active.length)),rows=Math.max(2,Math.min(12,active.width));grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;grid.innerHTML='';for(let i=0;i<cols*rows;i++){const c=document.createElement('button');c.className='cell';const x=i%cols,y=Math.floor(i/cols),nx=(x+.5-cols/2)/(cols/2),ny=(y+.5-rows/2)/(rows/2);if(['circle','keyhole'].includes(active.shape)&&nx*nx+ny*ny>1){c.classList.add('disabled');c.disabled=true}if(active.shape==='keyhole'&&(nx*nx+ny*ny<.065||(Math.abs(nx)<.13&&ny>.08))){c.classList.add('disabled');c.disabled=true}const p=active.plants?.[i];if(p)c.innerHTML=`<span class="density">${Array.from({length:Math.min(p.density||1,16)},()=>`<i>${p.icon}</i>`).join('')}</span><small>${esc(p.name)}</small>`;c.onclick=()=>plantForm(i);grid.appendChild(c)}palette()}
+function plantForm(i){cellIndex=i;const p=active.plants?.[i]||selected;$('#plantTitle').textContent=active.plants?.[i]?'Edit Plant':'Plant a Square';$('#plantIcon').textContent=p.icon||'🌱';$('#plantName').value=p.name||'';$('#variety').value=p.variety||'';$('#species').value=p.species||'';$('#density').value=[1,2,4,8,9,16].includes(+p.density)?+p.density:1;$('#notes').value=p.notes||'';$('#remove').style.visibility=active.plants?.[i]?'visible':'hidden';$('#plantDialog').showModal()}
+
+$$('nav button').forEach(b=>b.onclick=()=>show(b.dataset.view));
+$('#year').onchange=e=>{state.year=+e.target.value;persist();beds();ideas()};
+$('#addYear').onclick=()=>{const y=+prompt('Growing season year',Math.max(...state.years)+1);if(y>2000&&!state.years.includes(y)){state.years.push(y);state.year=y;persist();render()}};
+$('#newBed').onclick=()=>$('#bedDialog').showModal();
+$('.shapes').onclick=e=>{const b=e.target.closest('[data-shape]');if(!b)return;shape=b.dataset.shape;$$('.shapes button').forEach(x=>x.classList.toggle('selected',x===b));$('.keynote').style.display=shape==='keyhole'?'block':'none';if(['square','circle','keyhole'].includes(shape))$('#width').value=$('#length').value};
+$('#length').oninput=()=>{if(['square','circle','keyhole'].includes(shape))$('#width').value=$('#length').value};
+$('#create').onclick=e=>{e.preventDefault();const name=$('#bedName').value.trim();if(!name)return $('#bedName').reportValidity();const length=+$('#length').value,width=['square','circle','keyhole'].includes(shape)?length:+$('#width').value;active={id:'bed-'+Date.now(),year:state.year,name,shape,length,width,plants:{}};state.beds.push(active);persist();$('#bedDialog').close();beds();show('planner');planner();toast('Garden bed created')};
+$('#bedList').onclick=e=>{const d=e.target.closest('[data-delete]');if(d){e.stopPropagation();if(confirm('Delete this bed and its planted layout?')){state.beds=state.beds.filter(b=>b.id!==d.dataset.delete);if(active?.id===d.dataset.delete)active=null;persist();beds()}return}const b=e.target.closest('[data-id]');if(b)openBed(b.dataset.id)};
+$('#palette').onclick=e=>{const b=e.target.closest('[data-plant]');if(b){selected=plants[+b.dataset.plant];palette()}};
+$('#plantFilters').onclick=e=>{const b=e.target.closest('[data-category]');if(!b)return;plantCategory=b.dataset.category;palette()};
+$('#plantSearch').oninput=e=>{plantSearch=e.target.value;palette()};
+$('#custom').onclick=()=>{selected={icon:'🌱',name:'Custom plant',variety:'',species:'',density:1,category:'Custom'};palette();toast(active?'Custom plant selected — tap a square':'Open a garden bed first')};
+$('#savePlant').onclick=e=>{e.preventDefault();const name=$('#plantName').value.trim();if(!name)return $('#plantName').reportValidity();active.plants??={};active.plants[cellIndex]={icon:$('#plantIcon').textContent,name,variety:$('#variety').value,species:$('#species').value,density:+$('#density').value,notes:$('#notes').value};persist();$('#plantDialog').close();planner();beds();toast('Plant saved')};
+$('#remove').onclick=()=>{delete active.plants[cellIndex];persist();$('#plantDialog').close();planner();beds()};
+$('#save').onclick=()=>{persist();toast('Layout saved locally')};
+$('#clear').onclick=()=>{if(active&&confirm('Remove every plant from this bed?')){active.plants={};persist();planner();beds()}};
+$('#newIdea').onclick=()=>{const n=prompt('Idea bed name');if(n?.trim()){state.ideas.unshift(n.trim());persist();ideas()}};
+$('#ideaList').onclick=e=>{const b=e.target.closest('[data-commit]');if(b){const name=state.ideas[+b.dataset.commit];state.beds.push({id:'bed-'+Date.now(),year:state.year,name,shape:'rectangle',length:8,width:4,plants:{}});persist();beds();toast(`${name} added to ${state.year}`)}};
+$('#reset').onclick=()=>{if(confirm('Reset all planner data to the original demo?')){state=clone(demo);active=null;persist();render();show('beds')}};
+function render(){years();beds();ideas();palette();planner()}
+render();
